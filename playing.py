@@ -8,6 +8,13 @@ class Solver():
 		self.puzzle = puzzle15.puzzle()
 		self.moves = "FLAG"
 
+	def __lt__(self, other):
+                if self.moves[-1] == other.moves[-1]:
+			return False
+return self.moves[-1] < other.moves[-1]
+        def __lt__(self, other):
+                return self.moves[-1] < other.moves[-1]
+
 	#retorna a string com todos os movimentos feitos
 	def getMoves(self):
 		return self.moves
@@ -31,15 +38,6 @@ class Solver():
 	def printSolution(self):
 		print("It takes " + str(len(self.moves) - 4) + " moves  " + self.moves[4:])
 		self.puzzle.printPuzzle()
-
-	#retorna quantos estao fora de sua posicao
-	def heuristicSolution(self):
-		counter = 0
-		for line in range(0, 4):
-			for column in range(0,4):
-				if self.puzzle.puzzle[line][column] == (line*4) + column + 1:
-					counter += 1
-		return counter + len(self.moves)
 
 	#solver de forca bruta
 	def BFSolver(self):
@@ -74,35 +72,44 @@ class Solver():
         
 			aux = Solver.recreate(queue.popleft())
 		return aux
+	
+        #retorna quantos estao fora de sua posicao
+	def heuristicSolution(self):
+		counter = 0
+		for line in range(0, 4):
+			for column in range(0,4):
+				if self.puzzle.puzzle[line][column] == (line*4) + column + 1:
+					counter += 1
+		return int(counter) + int(len(self.moves))
 
 	def heuristicSolver(self):
 		heap = PriorityQueue()
 		aux = []
-		heap.put((int(self.heuristicSolution()), Solver.recreate(self)))
+		heap.put((self.heuristicSolution(), Solver.recreate(self)))
 		aux = heap.get()
 	
 		while True:
 			if aux[1].moves[-1] != 'U' and aux[1].puzzle.moveDown():
 				aux[1].addMove("D")
-				heap.put((int(aux[1].heuristicSolution()), Solver.recreate(aux[1])))
+				heap.put((aux[1].heuristicSolution(), Solver.recreate(aux[1])))
 				aux[1].puzzle.moveUp()
 				aux[1].deleteMove()
             
 			if aux[1].moves[-1] != 'D' and aux[1].puzzle.moveUp():
 				aux[1].addMove("U")
-				heap.put((int(aux[1].heuristicSolution()), Solver.recreate(aux[1])))
+				heap.put((aux[1].heuristicSolution(), Solver.recreate(aux[1])))
 				aux[1].deleteMove()
 				aux[1].puzzle.moveDown()
             
 			if aux[1].moves[-1] != 'R' and aux[1].puzzle.moveLeft():
 				aux[1].addMove("L")
-				heap.put((int(aux[1].heuristicSolution()), Solver.recreate(aux[1])))
+				heap.put((aux[1].heuristicSolution(), Solver.recreate(aux[1])))
 				aux[1].deleteMove()
 				aux[1].puzzle.moveRight()
             
 			if aux[1].moves[-1] != 'L' and aux[1].puzzle.moveRight():
 				aux[1].addMove("R")
-				heap.put((int(aux[1].heuristicSolution()), Solver.recreate(aux[1])))
+				heap.put((aux[1].heuristicSolution(), Solver.recreate(aux[1])))
 				aux[1].deleteMove()
 				aux[1].puzzle.moveLeft()
 			

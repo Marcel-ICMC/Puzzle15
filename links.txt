@@ -1,1 +1,2 @@
+https://stackoverflow.com/questions/40205223/priority-queue-with-tuples-and-dicts
 http://www.lcad.icmc.usp.br/~jbatista/scc218
