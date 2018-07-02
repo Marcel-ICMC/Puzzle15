@@ -71,7 +71,8 @@ class Solver():
         
 			aux = Solver.recreate(queue.popleft())
 		return aux
-	
+
+	#retorna a soma das diferencas entre coluna e linha atual e a coluna ideal de num
 	def distanceSolution(self, num, line, column):
 		nline = ceil((num-1)/4)
 		ncolumn = (num - 1) % 4
@@ -95,10 +96,11 @@ class Solver():
 		heap.put((self.heuristicSolution(), Solver.recreate(self)))
 		aux = heap.get()
 
-		while aux[0] < 50:
-			#print("\n")
+		while len(aux[1].moves) < 100:
 			#print(str(aux[0]))
 			#print(str(len(aux[1].moves)))
+			#print("\n")
+			#aux[1].puzzle.printPuzzle()
 			#print("\n")
 			if aux[1].moves[-1] != 'U' and aux[1].puzzle.moveDown():
 				aux[1].addMove("D")
@@ -129,9 +131,45 @@ class Solver():
 				break
 		return aux
 
+	#esta funcao calcula e retorna um deque de todos os movimentos possiveis ate um numero n de passos
+	def BFSolver(self):
+		queue = deque([self])
+		aux = Solver()
+		aux.puzzle.copy(queue.popleft().puzzle)
+		nmoves = 0        
+
+		while (aux[0] < 5):
+			if aux.moves[-1] != 'U' and aux.puzzle.moveDown():
+				aux.addMove("D")
+				queue.append((aux[0] + 1, Solver.recreate(aux)))
+				aux.puzzle.moveUp()
+				aux.deleteMove()
+            
+			if aux.moves[-1] != 'D' and aux.puzzle.moveUp():
+				aux.addMove("U")
+				queue.append((aux[0] + 1, Solver.recreate(aux)))
+				aux.deleteMove()
+				aux.puzzle.moveDown()
+            
+			if aux.moves[-1] != 'R' and aux.puzzle.moveLeft():
+				aux.addMove("L")
+				queue.append((aux[0] + 1, Solver.recreate(aux)))
+				aux.deleteMove()
+				aux.puzzle.moveRight()
+            
+			if aux.moves[-1] != 'L' and aux.puzzle.moveRight():
+				aux.addMove("R")
+				queue.append((aux[0] + 1, Solver.recreate(aux)))
+				aux.deleteMove()
+				aux.puzzle.moveLeft()
+
+			aux = Solver.recreate(queue.popleft())
+		return aux
+
 	    
 x = Solver()
-x.puzzle.Shuffle()
+x.puzzle.setPuzzle(([0, 15, 9, 2], [10, 12, 11, 6], [5, 7, 13, 4], [1, 14, 3, 8]), [0, 0,])
+#x.puzzle.Shuffle()
 #x.puzzle.moveUp()
 #x.puzzle.moveLeft()
 #x.puzzle.moveUp()

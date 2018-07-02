@@ -7,6 +7,10 @@ class puzzle():
         self.puzzle = ([1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 0])
         self.empty = [3, 3]#ordem em linha, coluna
 
+    def setPuzzle(self, p, e):
+        self.puzzle = p
+        self.empty = e
+
     def getPuzzle(self):
         return self.puzzle
 
