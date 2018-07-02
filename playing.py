@@ -1,3 +1,4 @@
+from math import ceil
 from queue import PriorityQueue
 from collections import deque
 import puzzle15
@@ -71,14 +72,21 @@ class Solver():
 			aux = Solver.recreate(queue.popleft())
 		return aux
 	
+	def distanceSolution(self, num, line, column):
+		nline = ceil((num-1)/4)
+		ncolumn = (num - 1) % 4
+
+		return abs(line - nline) + abs(column - ncolumn)
+
         #retorna quantos estao fora de sua posicao
 	#mais a quantidade atual de movimentos necessarios para chegar nesta situacao
 	def heuristicSolution(self):
 		counter = 0
 		for line in range(0, 4):
 			for column in range(0,4):
-				if self.puzzle.puzzle[line][column] == (line*4) + column + 1:
-					counter += 1
+				#if self.puzzle.puzzle[line][column] == (line*4) + column + 1:
+				#	counter += 1
+				counter += self.distanceSolution(self.puzzle.puzzle[line][column], line, column)
 		return int(counter) + int(len(self.moves))
 
 	def heuristicSolver(self):
@@ -87,11 +95,11 @@ class Solver():
 		heap.put((self.heuristicSolution(), Solver.recreate(self)))
 		aux = heap.get()
 
-		while True:
-			print("\n")
-			print(str(aux[0]))
-			print(str(len(aux[1].moves)))
-			print("\n")
+		while aux[0] < 50:
+			#print("\n")
+			#print(str(aux[0]))
+			#print(str(len(aux[1].moves)))
+			#print("\n")
 			if aux[1].moves[-1] != 'U' and aux[1].puzzle.moveDown():
 				aux[1].addMove("D")
 				heap.put((aux[1].heuristicSolution(), Solver.recreate(aux[1])))
@@ -123,11 +131,11 @@ class Solver():
 
 	    
 x = Solver()
-#x.puzzle.Shuffle()
-x.puzzle.moveUp()
-x.puzzle.moveLeft()
-x.puzzle.moveUp()
+x.puzzle.Shuffle()
+#x.puzzle.moveUp()
+#x.puzzle.moveLeft()
+#x.puzzle.moveUp()
 x.puzzle.printPuzzle()
 print()
-solved = x.BFSolver()
+solved = x.heuristicSolver()
 solved[1].printSolution()
