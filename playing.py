@@ -9,11 +9,9 @@ class Solver():
 		self.moves = "FLAG"
 
 	def __lt__(self, other):
-                if self.moves[-1] == other.moves[-1]:
+		if self.moves[-1] == other.moves[-1]:
 			return False
-return self.moves[-1] < other.moves[-1]
-        def __lt__(self, other):
-                return self.moves[-1] < other.moves[-1]
+		return self.moves[-1] < other.moves[-1]
 
 	#retorna a string com todos os movimentos feitos
 	def getMoves(self):
@@ -74,6 +72,7 @@ return self.moves[-1] < other.moves[-1]
 		return aux
 	
         #retorna quantos estao fora de sua posicao
+	#mais a quantidade atual de movimentos necessarios para chegar nesta situacao
 	def heuristicSolution(self):
 		counter = 0
 		for line in range(0, 4):
@@ -87,8 +86,12 @@ return self.moves[-1] < other.moves[-1]
 		aux = []
 		heap.put((self.heuristicSolution(), Solver.recreate(self)))
 		aux = heap.get()
-	
+
 		while True:
+			print("\n")
+			print(str(aux[0]))
+			print(str(len(aux[1].moves)))
+			print("\n")
 			if aux[1].moves[-1] != 'U' and aux[1].puzzle.moveDown():
 				aux[1].addMove("D")
 				heap.put((aux[1].heuristicSolution(), Solver.recreate(aux[1])))
@@ -120,8 +123,11 @@ return self.moves[-1] < other.moves[-1]
 
 	    
 x = Solver()
-x.puzzle.Shuffle()
+#x.puzzle.Shuffle()
+x.puzzle.moveUp()
+x.puzzle.moveLeft()
+x.puzzle.moveUp()
 x.puzzle.printPuzzle()
 print()
-solved = x.heuristicSolver()
-solved.printSolution()
+solved = x.BFSolver()
+solved[1].printSolution()
